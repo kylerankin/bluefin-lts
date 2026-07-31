@@ -38,7 +38,7 @@ EOF
 
     # rpm --erase should succeed silently (|| true in original script handles failure)
     # rpm -q kernel --queryformat needs to return a kernel version for HWE path
-    cat > "${STUB_BIN}/rpm" <<EOF
+    cat > "${STUB_BIN}/rpm" <<'EOF'
 #!/usr/bin/env bash
 if [[ "$*" == *"--queryformat"* ]]; then
     echo "6.12.0-200.el10.x86_64"
@@ -190,7 +190,7 @@ EOF
     grep -q "versionlock" "${DNF_LOG}"
 }
 
-@test "kernel-swap: does not invoke skopeo in standard (non-HWE) mode" {
+@test "kernel-swap: invokes skopeo for common akmods download" {
     SKOPEO_LOG="${TEST_ROOT}/skopeo.log"
     export SKOPEO_LOG
     cat > "${STUB_BIN}/skopeo" <<'EOF'
@@ -201,7 +201,6 @@ EOF
     chmod +x "${STUB_BIN}/skopeo"
     run bash "${PATCHED_SCRIPT}"
     [ "$status" -eq 0 ]
-    # Standard mode: skopeo should not be called (HWE block is unconditional in current script)
-    # This test documents the current behavior
-    : # no assertion — documents that skopeo IS called unconditionally currently
+    [ -f "${SKOPEO_LOG}" ]
+    grep -q "copy" "${SKOPEO_LOG}"
 }
