@@ -33,6 +33,10 @@ jobs:
           # so anything merged directly to 'main' is silently reverted by the next
           # promotion. Reject it here with a signal instead. Promotion PRs, which
           # legitimately target 'main', are the only exception.
+          # The auto/promote-testing-to-main escape hatch below is belt-and-suspenders:
+          # promotion PRs are opened with GITHUB_TOKEN, so they never trigger workflows
+          # and this branch is effectively dead code. Keep it anyway — it documents why
+          # the `main` exception exists and stops a future reader from "simplifying" it away.
           if [[ "$BASE_REF" == "main" && "$HEAD_REF" != "testing" && "$HEAD_REF" != "auto/promote-testing-to-main" ]]; then
             echo "::error::PRs must target 'testing', not 'main'."
             echo "::error::The testing->main promotion is handled automatically by promote-testing-to-main.yml."
