@@ -60,6 +60,11 @@ concerns that vendor content.
 
 ## Branch and release safety
 
+All pull requests target `testing`. Never open a content PR against `main`;
+`main` only receives promotion commits from `testing` via
+`promote-testing-to-main.yml`. This aligns bluefin-lts with the factory
+standard (`bluefin`, `dakota`) — see the canonical branch model in
+[`projectbluefin/common`](https://github.com/projectbluefin/common/blob/main/docs/factory/agentic-model.md).
 Follow the branch and promotion behavior defined by the current workflows. Do
 not infer release behavior from tags alone. Verify published artifacts by
 immutable digest and signature.
